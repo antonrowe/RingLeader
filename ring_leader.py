@@ -36,12 +36,12 @@ def initalize_game():
     bullets = Bullet_List()
     # List of RGB tuples tracks the number of colors in the game currently
     level_colors = COLOR_LEVELS[0]
-    # Player's ship 
+    # Player's ship
     ship = Ship((WIDTH // 2, HEIGHT - 2*HULL_RADIUS), COLOR_LEVELS[0])
     # Tracks the player's score
     score = Score(500)
     #1: Normal Play, 0: Game Over, 3: Paused, 5: Instruction
-    game_state = 1 
+    game_state = 1
     # Levels progresses with player score
     level = 1
     # Briefly displayed at level up
@@ -51,11 +51,22 @@ def initalize_game():
 
 initalize_game()
 
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
+
+BackGround = Background('cloud_sky.jpg', [0,0])
+
+
 def draw():
     """
     PGZero's global draw() function
     """
-    screen.fill(BLACK) # Background
+    screen.fill([255, 255, 255])
+    screen.blit(BackGround.image, BackGround.rect) # Background
     bubble_grid.draw(screen)
     ship.draw(screen)
     bullets.draw(screen)
@@ -106,7 +117,7 @@ def on_mouse_move(pos):
 
 def on_mouse_down(pos, button):
     """
-    PGZero hook procedure. 
+    PGZero hook procedure.
     LMB: Fire Bullet
     RMB: Rush out a new Bubble_Row
     """
@@ -118,7 +129,7 @@ def on_mouse_down(pos, button):
 
 def on_key_down(key):
     """
-    PGZero hook procedure. 
+    PGZero hook procedure.
     SPACE: Cycle Ship's Bullet Color
     P:     Pause/Unpause the game
     R:     Restart the game
@@ -142,7 +153,7 @@ def on_key_down(key):
 
 def next_level():
     """
-    Procedure trigered when player score reaches next_level_points. Sets 
+    Procedure trigered when player score reaches next_level_points. Sets
      conditions for next level.
     """
     global level, bubble_grid, bullets, droppers, new_level_msg, level_colors, \
@@ -155,7 +166,7 @@ def next_level():
     score.next_level_points += 250 * level
 
     new_level_msg = f"Level {level}"
-    
+
     if level == 5:    # Add new color to increase difficulty
         level_colors = COLOR_LEVELS[1]
         new_level_msg += "\nBubble Creation Rate -20%\nNew Color Added!"
